@@ -35,12 +35,20 @@ def extract_images(file_path: str):
 def extract_images_from_pdf(pdf_file_path: str, output_path: str):
     try:
         reader = PdfReader(pdf_file_path)
+        seen_images = set()
         ensure_directory_exists(output_path)
+
         for page in reader.pages:
             for image in page.images:
-                print("image")
-                ext = os.path.splitext(image.name)[1].lower()
                 image_data = image.data
+                image_hash = hash(image_data)
+
+                if image_hash in seen_images:
+                    continue
+
+                seen_images.add(image_hash)
+
+                ext = os.path.splitext(image.name)[1].lower()
                 if ext == ".jpeg":
                     ext = ".jpg"
                 elif ext == ".jp2":
