@@ -111,9 +111,11 @@ def extract_images_from_pptx(pptx_file_path: str, output_path: str):
             _, ext = os.path.splitext(filename)
             if ext.lower() == ".jpeg":
                 ext = ".jpg"
-            if ext.lower() == ".jp2":
+            elif ext.lower() == ".jp2":
                 try:
                     with Image.open(original_path) as img:
+                        if img.mode == "RGBA":
+                            img = img.convert("RGB")
                         ext = ".png"
                         img.save(original_path, format="PNG")
                 except Exception as e:
